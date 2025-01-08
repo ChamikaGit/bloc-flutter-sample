@@ -109,7 +109,7 @@ class Homepage extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).pushNamed(
                         "/secondPage",
-                        arguments: context.read<CounterCubit>(),
+                        arguments: context,
                       );
                     },
                     child: Container(

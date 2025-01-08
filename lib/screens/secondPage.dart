@@ -32,7 +32,10 @@ class Secondpage extends StatelessWidget {
             count = state.count;
           } else if (state is CounterUpdated) {
             count = state.count;
+          } else if (state is CounterCleared){
+            count = state.count;
           }
+
           return Center(
               child: Text(count.toString(), style: Theme
                   .of(context)
