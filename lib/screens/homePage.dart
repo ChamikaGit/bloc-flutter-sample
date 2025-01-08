@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_sample/bloc/counter_cubit/counter_cubit.dart';
 
 import '../bloc/counter/counter_bloc.dart';
 
@@ -13,15 +14,24 @@ class Homepage extends StatelessWidget {
 
   Widget content() {
     return BlocProvider(
-      create: (context) => CounterBloc(),
-      child: BlocBuilder<CounterBloc, CounterState>(
+      // create: (context) => CounterBloc(),
+      create: (context) => CounterCubit(),
+      // child: BlocBuilder<CounterBloc, CounterState>(
+      child: BlocBuilder<CounterCubit, CounterCubitState>(
         builder: (context, state) {
+
+          late int count;
+          if (state is CounterInitial) {
+            count = state.count;
+          } else if (state is CounterUpdated) {
+            count = state.count;
+          }
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  state.count.toString(),
+                  count.toString(),
                   style: Theme.of(context)
                       .textTheme
                       .displayLarge
@@ -36,7 +46,8 @@ class Homepage extends StatelessWidget {
                       onTap: () {
                         print("CounterIncrement clicked");
                         /** to execute the bloc events **/
-                        context.read<CounterBloc>().add(CounterIncrement());
+                        // context.read<CounterBloc>().add(CounterIncrement());
+                        context.read<CounterCubit>().increment();
                       },
                       child: Container(
                         width: 80,
@@ -51,7 +62,8 @@ class Homepage extends StatelessWidget {
                       onTap: () {
                         print("CounterDecrement clicked");
                         /** to execute the bloc events **/
-                        context.read<CounterBloc>().add(CounterDecrement());
+                        // context.read<CounterBloc>().add(CounterDecrement());
+                        context.read<CounterCubit>().decrement();
                       },
                       child: Container(
                         width: 80,
@@ -68,7 +80,8 @@ class Homepage extends StatelessWidget {
                   onTap: () {
                     print("Counter Clear clicked");
                     /** to execute the bloc events clear **/
-                    context.read<CounterBloc>().add(CounterClear());
+                    // context.read<CounterBloc>().add(CounterClear());
+                    context.read<CounterCubit>().clear();
                   },
                   child: Container(
                     padding: const EdgeInsets.all(10),

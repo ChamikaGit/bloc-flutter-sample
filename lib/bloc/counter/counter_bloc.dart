@@ -16,5 +16,13 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
     on<CounterClear>((event, emit) {
       emit(state.copyWith(count: 0));
     });
+
+    // @override
+    // void onChange(Change<int> change) {
+    //   super.onChange(change);
+    //   print(change);
+    // }
   }
+
+
 }

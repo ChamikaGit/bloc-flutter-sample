@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_sample/bloc/counter_cubit/counter_cubit.dart';
 
 import '../bloc/counter/counter_bloc.dart';
 
@@ -22,11 +23,18 @@ class Secondpage extends StatelessWidget {
 
   Widget container(BuildContext context) {
     return BlocProvider.value(
-      value: BlocProvider.of<CounterBloc>(context),
-      child: BlocBuilder<CounterBloc, CounterState>(
+      value: BlocProvider.of<CounterCubit>(context),
+      child: BlocBuilder<CounterCubit, CounterCubitState>(
         builder: (context, state) {
+
+          late int count;
+          if (state is CounterInitial) {
+            count = state.count;
+          } else if (state is CounterUpdated) {
+            count = state.count;
+          }
           return Center(
-              child: Text(state.count.toString(), style: Theme
+              child: Text(count.toString(), style: Theme
                   .of(context)
                   .textTheme
                   .displayLarge
