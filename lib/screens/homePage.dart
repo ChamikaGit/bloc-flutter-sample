@@ -1,138 +1,142 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bloc_sample/bloc/counter_cubit/counter_cubit.dart';
-
-import '../bloc/counter/counter_bloc.dart';
+import '../bloc/counter_cubit/counter_cubit.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: content());
-  }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Counter Cubit Example"),
+        centerTitle: true,
+      ),
+      body: BlocProvider(
+        create: (context) => CounterCubit(),
+        child: BlocBuilder<CounterCubit, CounterCubitState>(
+          builder: (context, state) {
+            // Determine the counter value based on the current state
+            late int count;
+            if (state is CounterInitial) {
+              count = state.count;
+            } else if (state is CounterUpdated) {
+              count = state.count;
+            } else if (state is CounterCleared) {
+              count = state.count;
+            }
 
-  Widget content() {
-    return BlocProvider(
-      // create: (context) => CounterBloc(),
-      create: (context) => CounterCubit(),
-      // child: BlocBuilder<CounterBloc, CounterState>(
-      child: BlocBuilder<CounterCubit, CounterCubitState>(
-        builder: (context, state) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Counter Display
+                  Text(
+                    count.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 35),
 
-          late int count;
-          if (state is CounterInitial) {
-            count = state.count;
-          } else if (state is CounterUpdated) {
-            count = state.count;
-          }
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  count.toString(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .displayLarge
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 35),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print("CounterIncrement clicked");
-                        /** to execute the bloc events **/
-                        // context.read<CounterBloc>().add(CounterIncrement());
-                        context.read<CounterCubit>().increment();
-                      },
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.blue),
-                        child: const Icon(Icons.add, size: 40),
+                  // Increment and Decrement Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          context.read<CounterCubit>().increment();
+                        },
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue,
+                          ),
+                          child: const Icon(Icons.add, size: 40, color: Colors.white),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 35),
-                    InkWell(
-                      onTap: () {
-                        print("CounterDecrement clicked");
-                        /** to execute the bloc events **/
-                        // context.read<CounterBloc>().add(CounterDecrement());
-                        context.read<CounterCubit>().decrement();
-                      },
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.blue),
-                        child: const Icon(Icons.remove, size: 40),
+                      const SizedBox(width: 35),
+                      InkWell(
+                        onTap: () {
+                          context.read<CounterCubit>().decrement();
+                        },
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue,
+                          ),
+                          child: const Icon(Icons.remove, size: 40, color: Colors.white),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 35),
-                InkWell(
-                  onTap: () {
-                    print("Counter Clear clicked");
-                    /** to execute the bloc events clear **/
-                    // context.read<CounterBloc>().add(CounterClear());
-                    context.read<CounterCubit>().clear();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: 80,
-                    height: 80,
-                    decoration: const BoxDecoration(
+                    ],
+                  ),
+                  const SizedBox(height: 35),
+
+                  // Clear Button
+                  InkWell(
+                    onTap: () {
+                      context.read<CounterCubit>().clear();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      width: 80,
+                      height: 80,
+                      decoration: const BoxDecoration(
                         shape: BoxShape.rectangle,
                         color: Colors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: Center(
-                      child: Text("Clear",
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Clear",
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.bold)),
+                              ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 35),
+                  const SizedBox(height: 35),
 
-                /** This section used to pass the context
-                 * and get the same value to
-                 * other screen using the same block instance.
-                 */
-
-                InkWell(
-                  onTap: () {
-                    print("Next Page Clicked");
-                    Navigator.of(context).pushNamed("/secondPage",arguments: context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: 120,
-                    height: 80,
-                    decoration: const BoxDecoration(
+                  // Navigation to Second Page
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        "/secondPage",
+                        arguments: context.read<CounterCubit>(),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      width: 120,
+                      height: 80,
+                      decoration: const BoxDecoration(
                         shape: BoxShape.rectangle,
                         color: Colors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: Center(
-                      child: Text("Second Page",
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Second Page",
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.bold)),
+                              ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
